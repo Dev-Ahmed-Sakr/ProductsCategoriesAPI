@@ -20,6 +20,13 @@ namespace ProductsCategoriesAPI.Features.Products.Endpoints
         {
             Delete("/api/products/{id:guid}");
             AllowAnonymous();
+            Summary(s =>
+            {
+                s.Summary = "Deletes a product by ID.";
+                s.Description = "Provide the product ID in the URL path to delete the corresponding product.";
+                s.Response(204, "The product was successfully deleted.");
+                s.Response(404, "The product with the given ID was not found.");
+            });
         }
 
         public override async Task HandleAsync(CancellationToken ct)

@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using Microsoft.AspNetCore.Connections;
 using ProductsCategoriesAPI.Interfaces;
 using ProductsCategoriesAPI.Models;
 
@@ -19,6 +20,13 @@ public class DeleteCategoryEndpoint : EndpointWithoutRequest
     {
         Delete("/api/Categories/{id:guid}");
         AllowAnonymous();
+        Summary(s =>
+        {
+            s.Summary = "Deletes a category by ID";
+            s.Description = "Provide the category ID in the URL path to delete the corresponding category.";
+            s.Response(204, "The category was successfully deleted.");
+            s.Response(404, "The category with the given ID was not found.");
+        });
     }
     public override async Task HandleAsync(CancellationToken ct)
     {

@@ -7,7 +7,7 @@ using ProductsCategoriesAPI.Models;
 
 namespace ProductsCategoriesAPI.Features.Products.Endpoints
 {
-    public class UpdateProductEndpoint :  Endpoint<ProductRequest, ProductResponse>
+    public class UpdateProductEndpoint : Endpoint<ProductRequest, ProductResponse>
     {
         private readonly IRepository<Product> _repository;
 
@@ -46,8 +46,8 @@ namespace ProductsCategoriesAPI.Features.Products.Endpoints
             await _repository.SaveChangesAsync();
 
             // Map to response
-            var response = product.ToResponse("Category Placeholder"); // Replace "Category Placeholder" with actual lookup if necessary
-            await SendAsync(response);
+            var response = product.ToResponse(); // Replace "Category Placeholder" with actual lookup if necessary
+            await SendAsync(response, statusCode: 200, ct);
         }
     }
 }

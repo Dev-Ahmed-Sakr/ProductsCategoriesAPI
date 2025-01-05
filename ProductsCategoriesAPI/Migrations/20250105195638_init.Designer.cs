@@ -12,8 +12,8 @@ using ProductsCategoriesAPI.Data;
 namespace ProductsCategoriesAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250101091942_Init-Project")]
-    partial class InitProject
+    [Migration("20250105195638_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,6 +52,8 @@ namespace ProductsCategoriesAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ParentCategoryId");
+
                     b.ToTable("Categories");
                 });
 
@@ -62,6 +64,9 @@ namespace ProductsCategoriesAPI.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoryId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
@@ -95,7 +100,18 @@ namespace ProductsCategoriesAPI.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("CategoryId1");
+
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("ProductsCategoriesAPI.Models.Category", b =>
+                {
+                    b.HasOne("ProductsCategoriesAPI.Models.Category", "ParentCategory")
+                        .WithMany()
+                        .HasForeignKey("ParentCategoryId");
+
+                    b.Navigation("ParentCategory");
                 });
 
             modelBuilder.Entity("ProductsCategoriesAPI.Models.Product", b =>
@@ -105,6 +121,19 @@ namespace ProductsCategoriesAPI.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ProductsCategoriesAPI.Models.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("ProductsCategoriesAPI.Models.Category", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

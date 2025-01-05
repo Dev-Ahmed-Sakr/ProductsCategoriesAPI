@@ -20,15 +20,16 @@ namespace ProductsCategoriesAPI.Helpers.Extensions
             };
         }
 
-        public static ProductResponse ToResponse(this Product product, string categoryName)
+        public static ProductResponse ToResponse(this Product product)
         {
+            // get category name from lookup by id
             return new ProductResponse
             {
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
-                CategoryName = categoryName,
+                CategoryName = product.Category.Name, // put name here
                 Status = product.Status.ToString(),
                 StockQuantity = product.StockQuantity,
                 ImageUrl = product.ImageUrl

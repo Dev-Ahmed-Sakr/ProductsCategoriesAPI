@@ -29,7 +29,7 @@ public class CreateProductEndpoint : Endpoint<ProductRequest, ProductResponse>
         await _repository.SaveChangesAsync();
 
         // Map Product entity to ProductResponse
-        var response = product.ToResponse("Category Placeholder");
+        var response = product.ToResponse();
         await SendAsync(response, 201);
     }
 }

@@ -63,9 +63,6 @@ namespace ProductsCategoriesAPI.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CategoryId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -97,8 +94,6 @@ namespace ProductsCategoriesAPI.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("CategoryId1");
-
                     b.ToTable("Products");
                 });
 
@@ -106,23 +101,18 @@ namespace ProductsCategoriesAPI.Migrations
                 {
                     b.HasOne("ProductsCategoriesAPI.Models.Category", "ParentCategory")
                         .WithMany()
-                        .HasForeignKey("ParentCategoryId");
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ParentCategory");
                 });
 
             modelBuilder.Entity("ProductsCategoriesAPI.Models.Product", b =>
                 {
-                    b.HasOne("ProductsCategoriesAPI.Models.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ProductsCategoriesAPI.Models.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");

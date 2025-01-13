@@ -1,7 +1,6 @@
-﻿using ProductsCategoriesAPI.Helpers;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProductsCategoriesAPI.Models
+namespace ProductsCategoryAccess.Entities
 {
     public class Category
     {
@@ -11,7 +10,7 @@ namespace ProductsCategoriesAPI.Models
         public Guid? ParentCategoryId { get; set; }
         [ForeignKey("ParentCategoryId")]
         public Category? ParentCategory { get; set; }
-        public CategoryStatus Status { get; set; }
+        public int Status { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
         public ICollection<Product> Products { get; set; }

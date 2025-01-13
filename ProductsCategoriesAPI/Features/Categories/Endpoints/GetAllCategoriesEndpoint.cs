@@ -1,18 +1,19 @@
 ﻿using FastEndpoints;
-using ProductsCategoriesAPI.Features.Categories.Models;
-using ProductsCategoriesAPI.Features.Products.Models;
-using ProductsCategoriesAPI.Interfaces;
-using ProductsCategoriesAPI.Models;
+using Microsoft.EntityFrameworkCore;
+using ProductsCategoryAccess.Entities;
+using ProductsCategoryAccess.Repositories;
+using ProductsCategoryService.Models;
+using ProductsCategoryService.Services;
 
 namespace ProductsCategoriesAPI.Features.Categories.Endpoints
 {
     public class GetAllCategoriesEndpoint : EndpointWithoutRequest<List<CategoryResponse>>
     {
-        private readonly IRepository<Category> _repository;
-
-        public GetAllCategoriesEndpoint(IRepository<Category> repository)
+        
+        private readonly ICategoryService _categoryService;
+        public GetAllCategoriesEndpoint(ICategoryService categoryService)
         {
-            _repository = repository;
+            _categoryService = categoryService;
         }
 
         public override void Configure()
@@ -23,7 +24,7 @@ namespace ProductsCategoriesAPI.Features.Categories.Endpoints
 
         public override async Task HandleAsync(CancellationToken ct)
         {
-            var categories = await _repository.GetAllAsync();
+            var categories = await _categoryService.GetCategoriesAsync();
             var response  = categories.Select(c => new CategoryResponse
             {
                 Id = c.Id,

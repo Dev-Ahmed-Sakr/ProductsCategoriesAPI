@@ -9,11 +9,11 @@ using ProductsCategoriesAPI.Data;
 
 #nullable disable
 
-namespace ProductsCategoriesAPI.Migrations
+namespace ProductsCategoryAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250109212045_init")]
-    partial class init
+    [Migration("20250111080712_updatesandrefactor")]
+    partial class updatesandrefactor
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

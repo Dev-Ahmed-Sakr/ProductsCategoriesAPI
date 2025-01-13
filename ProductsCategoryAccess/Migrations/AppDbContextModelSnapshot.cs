@@ -8,7 +8,7 @@ using ProductsCategoriesAPI.Data;
 
 #nullable disable
 
-namespace ProductsCategoriesAPI.Migrations
+namespace ProductsCategoryAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot

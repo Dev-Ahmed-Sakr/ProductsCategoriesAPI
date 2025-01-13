@@ -1,4 +1,4 @@
-﻿namespace ProductsCategoriesAPI.Features.Categories.Models
+﻿namespace ProductsCategoryService.Models
 {
     public class CategoryResponse
     {
@@ -6,7 +6,9 @@
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         public string? ParentCategoryName { get; set; }
-        public string Status { get; set; } = "Active"; // "Active", "Inactive"
+        public Guid? ParentCategoryId { get; set; }
+        public string StatusName { get; set; }
+        public int Status { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
     }

@@ -1,17 +1,14 @@
 ﻿using FastEndpoints;
-using ProductsCategoriesAPI.Features.Products.Models;
-using ProductsCategoriesAPI.Interfaces;
-using ProductsCategoriesAPI.Helpers;
-using ProductsCategoriesAPI.Models;
-using ProductsCategoriesAPI.Helpers.Extensions;
+using ProductsCategoryService.Models;
+using ProductsCategoryService.Services;
 
 public class CreateProductEndpoint : Endpoint<ProductRequest, ProductResponse>
 {
-    private readonly IRepository<Product> _repository;
+    private readonly IProductService _productService;
 
-    public CreateProductEndpoint(IRepository<Product> repository)
+    public CreateProductEndpoint(IProductService productService)
     {
-        _repository = repository;
+        _productService = productService;
     }
 
     public override void Configure()
@@ -22,14 +19,9 @@ public class CreateProductEndpoint : Endpoint<ProductRequest, ProductResponse>
 
     public override async Task HandleAsync(ProductRequest req, CancellationToken ct)
     {
-        // Map ProductRequest to Product entity
-        var product = req.ToEntity();
 
-        await _repository.AddAsync(product);
-        await _repository.SaveChangesAsync();
+        var savedProduct = await _productService.CreateProductAsync(req);
 
-        // Map Product entity to ProductResponse
-        var response = product.ToResponse();
-        await SendAsync(response, 201);
+        await SendAsync(savedProduct, 201);
     }
 }

@@ -1,16 +1,17 @@
 ﻿using FastEndpoints;
-using Microsoft.AspNetCore.Connections;
-using ProductsCategoriesAPI.Interfaces;
-using ProductsCategoriesAPI.Models;
+using ProductsCategoryAccess.Entities;
+using ProductsCategoryAccess.Repositories;
+using ProductsCategoryService.Services;
 
 namespace ProductsCategoriesAPI.Features.Categories.Endpoints;
 
 public class DeleteCategoryEndpoint : EndpointWithoutRequest
 {
-    private readonly IRepository<Category> _repository;
-    public DeleteCategoryEndpoint(IRepository<Category> repository)
+    private readonly ICategoryService _categoryService;
+
+    public DeleteCategoryEndpoint(ICategoryService categoryService)
     {
-        _repository = repository;
+        _categoryService = categoryService;
     }
     /// <summary>
     /// Deletes a Category by its ID.
@@ -31,14 +32,13 @@ public class DeleteCategoryEndpoint : EndpointWithoutRequest
     public override async Task HandleAsync(CancellationToken ct)
     {
         var id = Route<Guid>("id");
-        var category = await _repository.GetByIdAsync(id);
+        var category = await _categoryService.GetCategoryAsync(id);
         if (category is null)
         {
             await SendNotFoundAsync();
         }
 
-        _repository.Delete(category);
-        await _repository.SaveChangesAsync();
+        await _categoryService.DeleteCategoryAsync(category.Id);
         await SendNoContentAsync();
     }
 }

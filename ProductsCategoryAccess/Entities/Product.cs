@@ -1,7 +1,6 @@
-﻿using ProductsCategoriesAPI.Helpers;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProductsCategoriesAPI.Models
+namespace ProductsCategoryAccess.Entities
 {
     public class Product
     {
@@ -11,8 +10,8 @@ namespace ProductsCategoriesAPI.Models
         public decimal Price { get; set; }
         public Guid CategoryId { get; set; }
         [ForeignKey("CategoryId")]
-        public Category Category { get; set; }
-        public ProductStatus Status { get; set; }
+        public virtual Category Category { get; set; }
+        public int Status { get; set; }
         public int StockQuantity { get; set; }
         public string? ImageUrl { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;

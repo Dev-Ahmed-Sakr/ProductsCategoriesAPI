@@ -1,53 +1,33 @@
 ﻿using FastEndpoints;
-using ProductsCategoriesAPI.Features.Products.Models;
-using ProductsCategoriesAPI.Helpers.Extensions;
-using ProductsCategoriesAPI.Helpers;
-using ProductsCategoriesAPI.Interfaces;
-using ProductsCategoriesAPI.Models;
+using ProductsCategoryService.Models;
+using ProductsCategoryService.Services;
 
-namespace ProductsCategoriesAPI.Features.Products.Endpoints
+namespace ProductsCategoriesAPI.Features.Products.Endpoints;
+
+public class UpdateProductEndpoint : Endpoint<ProductRequest, ProductResponse>
 {
-    public class UpdateProductEndpoint : Endpoint<ProductRequest, ProductResponse>
+    private readonly IProductService _productService;
+
+    public UpdateProductEndpoint(IProductService productService)
     {
-        private readonly IRepository<Product> _repository;
+        _productService = productService;
+    }
 
-        public UpdateProductEndpoint(IRepository<Product> repository)
+    public override void Configure()
+    {
+        Put("/api/products/{id:guid}");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(ProductRequest req, CancellationToken ct)
+    {
+        var productId = Route<Guid>("id");
+        var product = await _productService.GetProductAsync(productId);
+        if (product == null)
         {
-            _repository = repository;
+            await SendNotFoundAsync();
+            return;
         }
-
-        public override void Configure()
-        {
-            Put("/api/products/{id:guid}");
-            AllowAnonymous();
-        }
-
-        public override async Task HandleAsync(ProductRequest req, CancellationToken ct)
-        {
-            var productId = Route<Guid>("id");
-            var product = await _repository.GetByIdAsync(productId);
-            if (product == null)
-            {
-                await SendNotFoundAsync();
-                return;
-            }
-
-            // Update entity with request data
-            product.Name = req.Name;
-            product.Description = req.Description;
-            product.Price = req.Price;
-            product.CategoryId = req.CategoryId;
-            product.Status = Enum.Parse<ProductStatus>(req.Status, true);
-            product.StockQuantity = req.StockQuantity;
-            product.ImageUrl = req.ImageUrl;
-            product.UpdatedDate = DateTime.UtcNow;
-
-            _repository.Update(product);
-            await _repository.SaveChangesAsync();
-
-            // Map to response
-            var response = product.ToResponse(); // Replace "Category Placeholder" with actual lookup if necessary
-            await SendAsync(response, statusCode: 200, ct);
-        }
+        await SendAsync(product, statusCode: 200, ct);
     }
 }

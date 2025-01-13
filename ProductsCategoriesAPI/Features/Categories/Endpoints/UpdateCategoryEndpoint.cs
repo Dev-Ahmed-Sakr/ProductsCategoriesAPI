@@ -1,18 +1,15 @@
 ﻿using FastEndpoints;
-using ProductsCategoriesAPI.Features.Categories.Models;
-using ProductsCategoriesAPI.Helpers;
-using ProductsCategoriesAPI.Helpers.Extensions;
-using ProductsCategoriesAPI.Interfaces;
-using ProductsCategoriesAPI.Models;
+using ProductsCategoryService.Models;
+using ProductsCategoryService.Services;
 
 namespace ProductsCategoriesAPI.Features.Categories.Endpoints
 {
-    public class UpdateCategoryEndpoint : Endpoint<CategoryRequest,CategoryResponse>
+    public class UpdateCategoryEndpoint : Endpoint<CategoryRequest, CategoryResponse>
     {
-        private readonly IRepository<Category> _repository;
-        public UpdateCategoryEndpoint(IRepository<Category> repository)
+        private readonly ICategoryService _categoryService;
+        public UpdateCategoryEndpoint(ICategoryService categoryService)
         {
-            _repository = repository;
+            _categoryService = categoryService;
         }
         public override void Configure()
         {
@@ -22,19 +19,12 @@ namespace ProductsCategoriesAPI.Features.Categories.Endpoints
         public override async Task HandleAsync(CategoryRequest req, CancellationToken ct)
         {
             var categoryId = Route<Guid>("id");
-            var category = await _repository.GetByIdAsync(categoryId);
-            if (category == null)
+            var response = await _categoryService.GetCategoryAsync(categoryId);
+            if (response == null)
             {
                 await SendNotFoundAsync();
                 return;
             }
-            category.Name = req.Name;
-            category.Description = req.Description;
-            category.ParentCategoryId = req.ParentCategoryId;
-            _repository.Update(category);
-            await _repository.SaveChangesAsync();
-
-            var response = category.ToResponse("Parent Category");
             await SendAsync(response);
         }
     }

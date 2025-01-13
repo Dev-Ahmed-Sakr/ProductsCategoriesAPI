@@ -1,16 +1,17 @@
 ﻿using FastEndpoints;
-using ProductsCategoriesAPI.Interfaces;
-using ProductsCategoriesAPI.Models;
+using ProductsCategoryAccess.Repositories;
+using ProductsCategoryService.Services;
 
 namespace ProductsCategoriesAPI.Features.Products.Endpoints
 {
     public class DeleteProductEndpoint : EndpointWithoutRequest
     {
-        private readonly IRepository<Product> _repository;
 
-        public DeleteProductEndpoint(IRepository<Product> repository)
+        private readonly IProductService _productService;
+
+        public DeleteProductEndpoint(IProductService productService)
         {
-            _repository = repository;
+            _productService = productService;
         }
         /// <summary>
         /// Deletes a product by its ID.
@@ -32,15 +33,14 @@ namespace ProductsCategoriesAPI.Features.Products.Endpoints
         public override async Task HandleAsync(CancellationToken ct)
         {
             var productId = Route<Guid>("id");
-            var product = await _repository.GetByIdAsync(productId);
+            var product = await _productService.GetProductAsync(productId);
             if (product == null)
             {
                 await SendNotFoundAsync();
                 return;
             }
 
-            _repository.Delete(product);
-            await _repository.SaveChangesAsync();
+            await _productService.DeleteProductAsync(product.Id);
 
             await SendNoContentAsync();
         }

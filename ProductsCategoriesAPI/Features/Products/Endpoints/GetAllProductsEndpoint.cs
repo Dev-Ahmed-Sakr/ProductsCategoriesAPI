@@ -1,15 +1,14 @@
 ﻿using FastEndpoints;
-using ProductsCategoriesAPI.Features.Products.Models;
-using ProductsCategoriesAPI.Interfaces;
-using ProductsCategoriesAPI.Models;
+using ProductsCategoryService.Models;
+using ProductsCategoryService.Services;
 
 public class GetAllProductsEndpoint : EndpointWithoutRequest<List<ProductResponse>>
 {
-    private readonly IRepository<Product> _repository;
+    private readonly IProductService _productService;
 
-    public GetAllProductsEndpoint(IRepository<Product> repository)
+    public GetAllProductsEndpoint(IProductService productService)
     {
-        _repository = repository;
+        _productService = productService;
     }
 
     public override void Configure()
@@ -20,21 +19,8 @@ public class GetAllProductsEndpoint : EndpointWithoutRequest<List<ProductRespons
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var products = await _repository.GetAllAsync();
+        var products = await _productService.GetProductsAsync();
 
-        // Map Product entities to ProductResponse DTOs
-        var response = products.Select(p => new ProductResponse
-        {
-            Id = p.Id,
-            Name = p.Name,
-            Description = p.Description,
-            Price = p.Price,
-            CategoryName = p.Name,
-            Status = p.Status.ToString(),
-            StockQuantity = p.StockQuantity,
-            ImageUrl = p.ImageUrl
-        }).ToList();
-
-        await SendAsync(response);
+        await SendAsync(products.ToList());
     }
 }

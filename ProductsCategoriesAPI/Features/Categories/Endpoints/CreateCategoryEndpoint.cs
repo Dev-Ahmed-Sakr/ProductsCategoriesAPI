@@ -1,18 +1,17 @@
 ﻿using FastEndpoints;
-using ProductsCategoriesAPI.Features.Categories.Models;
-using ProductsCategoriesAPI.Helpers.Extensions;
-using ProductsCategoriesAPI.Interfaces;
-using ProductsCategoriesAPI.Models;
+using ProductsCategoryService.Helpers.Extensions;
+using ProductsCategoryService.Models;
+using ProductsCategoryService.Services;
 
 namespace ProductsCategoriesAPI.Features.Categories.Endpoints
 {
-    public class CreateCategoryEndpoint : Endpoint<CategoryRequest,CategoryResponse>
+    public class CreateCategoryEndpoint : Endpoint<CategoryRequest, CategoryResponse>
     {
-        private readonly IRepository<Category> _repository;
+        private readonly ICategoryService _categoryService;
 
-        public CreateCategoryEndpoint(IRepository<Category> repository)
+        public CreateCategoryEndpoint(ICategoryService categoryService)
         {
-            _repository = repository;
+            _categoryService = categoryService;
         }
 
         public override void Configure()
@@ -23,12 +22,17 @@ namespace ProductsCategoriesAPI.Features.Categories.Endpoints
 
         public override async Task HandleAsync(CategoryRequest req, CancellationToken ct)
         {
-            var category = req.ToEntity();
-            await _repository.AddAsync(category);
-            await _repository.SaveChangesAsync();
+            try
+            {
+                var res = await _categoryService.CreateCategoryAsync(req);
+                await SendAsync(res, 201);
+            }
+            catch (Exception ex)
+            {
 
-            var response = category.ToResponse("Parent Category");
-            await SendAsync(response, 201);
+                throw;
+            }
+
         }
     }
 }

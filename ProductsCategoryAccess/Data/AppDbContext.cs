@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProductsCategoriesAPI.Models;
+using ProductsCategoryAccess.Entities;
 
 namespace ProductsCategoriesAPI.Data
 {
